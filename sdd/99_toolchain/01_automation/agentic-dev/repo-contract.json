@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "name": "templates-frontends",
+  "spec": {
+    "planning_paths": [
+      "sdd/01_planning",
+      "sdd/02_plan"
+    ],
+    "canonical_targets_dir": "sdd/02_plan"
+  },
+  "frontend": {
+    "default_target": "web",
+    "targets": {
+      "web": {
+        "dir": "client/web",
+        "adapter_path": "client/web/scripts/ui-parity-web-adapter.mjs",
+        "screens_path": "client/web/src/lib/specScreens.json",
+        "routes_path": "client/web/src/lib/specRouteCatalog.json",
+        "preview_url": "http://127.0.0.1:4301",
+        "parity_contract_path": "sdd/02_plan/10_test/templates/ui_parity_web_contract.yaml",
+        "route_gap_output": "sdd/02_plan/99_generated/from_planning/ui_parity/ui_parity_web_route_gap_report.json",
+        "route_gap_markdown_output": "sdd/02_plan/99_generated/from_planning/ui_parity/ui_parity_web_route_gap_report.md",
+        "proof_output": "sdd/03_verify/10_test/ui_parity/templates_web_agentic_dev_latest.json"
+      }
+    }
+  },
+  "commands": {
+    "plan_audit": "bash sdd/99_toolchain/01_automation/agentic-dev/run_frontend_target.sh route_gap .",
+    "build": "bash sdd/99_toolchain/01_automation/agentic-dev/run_frontend_target.sh build .",
+    "proof": "bash sdd/99_toolchain/01_automation/agentic-dev/run_frontend_target.sh proof .",
+    "deploy_dev": "echo 'configure deploy_dev command in sdd/99_toolchain/01_automation/agentic-dev/repo-contract.json for the cloned service' >&2",
+    "verify_dev": "test -f \"$PWD/sdd/03_verify/10_test/ui_parity/templates_web_agentic_dev_latest.json\" && echo verify-dev-placeholder-ok"
+  },
+  "artifacts": {
+    "route_gap_output": "sdd/02_plan/99_generated/from_planning/ui_parity/ui_parity_web_route_gap_report.json",
+    "proof_output": "sdd/03_verify/10_test/ui_parity/templates_web_agentic_dev_latest.json"
+  },
+  "notes": [
+    "This template contract is intentionally self-contained and points at repo-local 99_toolchain automation.",
+    "Replace deploy_dev and verify_dev with service-specific DEV commands after cloning the template.",
+    "plan_audit is expected to generate and gate a route-gap report before proof."
+  ]
+}

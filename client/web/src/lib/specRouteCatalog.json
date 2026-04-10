@@ -1,0 +1,23 @@
+[
+  {
+    "id": "TMP_001",
+    "route": "/",
+    "binding": "direct",
+    "notes": ["Primary signed-in workspace route."],
+    "tags": ["shell"]
+  },
+  {
+    "id": "TMP_002",
+    "route": "/orders",
+    "binding": "direct",
+    "notes": ["Collection route for the order table."],
+    "tags": ["table"]
+  },
+  {
+    "id": "TMP_003",
+    "route": "/login",
+    "binding": "direct",
+    "notes": ["Unauthenticated entry route."],
+    "tags": ["public"]
+  }
+]

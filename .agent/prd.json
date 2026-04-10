@@ -1,0 +1,29 @@
+{
+  "project": "template-agentic-program",
+  "goal": "이 파일은 Ralph loop starter scaffold다. downstream 저장소는 현재 작업 scope에 맞는 story set으로 즉시 교체한다.",
+  "updated_at": "2026-03-19T00:00:00+09:00",
+  "stories": [
+    {
+      "id": "TEMPLATE-ALIGN-001",
+      "title": "Replace template PRD scaffold with repository-specific delivery stories",
+      "priority": 1,
+      "status": "pending",
+      "scope": [
+        ".agent/prd.json",
+        ".agent/prompt.md",
+        "sdd/02_plan",
+        "sdd/03_build",
+        "sdd/03_verify"
+      ],
+      "validation": [
+        "jq . .agent/prd.json"
+      ],
+      "done_when": [
+        "Template placeholder stories are replaced with repository-specific work items.",
+        "Validation commands point at the active repository program.",
+        "progress.txt contains the current operator note."
+      ],
+      "blockers": []
+    }
+  ]
+}

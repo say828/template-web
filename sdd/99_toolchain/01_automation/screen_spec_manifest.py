@@ -1,0 +1,321 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[3]
+SCREEN_DIR = ROOT / "sdd/01_planning/02_screen"
+ASSET_DIR = ROOT / "sdd/99_toolchain/01_automation/assets"
+DESKTOP_CAPTURE_POLICY = {
+    "reference_visible_area": "1710x951",
+    "default_viewport": "1690x940",
+    "capture_mode": "viewport-first",
+}
+
+
+def screen(
+    *,
+    code: str,
+    name: str,
+    route: str,
+    access: str,
+    features: list[str],
+    asset: str,
+    requires_auth: bool,
+    callouts: list[tuple[tuple[float, float], str, str]],
+    crop_box: tuple[int, int, int, int] | None = None,
+    segments: list[dict] | None = None,
+) -> dict:
+    item = {
+        "code": code,
+        "name": name,
+        "route": route,
+        "access": access,
+        "features": features,
+        "asset": asset,
+        "requires_auth": requires_auth,
+        "callouts": callouts,
+    }
+    if crop_box:
+        item["crop_box"] = crop_box
+    if segments:
+        item["segments"] = segments
+    return item
+
+
+SCREEN_MANIFESTS = {
+    "web": {
+        "title": "Templates Web Screen Spec",
+        "service_label": "web",
+        "output": str(SCREEN_DIR / "web_screen_spec.pdf"),
+        "asset_dir": str(ASSET_DIR / "web_screen_capture"),
+        "base_url": "http://127.0.0.1:3001",
+        "api_base": "http://127.0.0.1:8000/api/v1",
+        "storage_key": "web.auth.token",
+        "capture_policy": DESKTOP_CAPTURE_POLICY,
+        "trim_background": False,
+        "cover_note": "첫 페이지는 web 화면코드 인덱스다. 이후 페이지는 좌측 화면 캡처와 우측 번호형 기능 테이블을 함께 제공한다.",
+        "source_refs": [
+            {"label": "implementation", "path": "client/web/src/app/App.tsx"},
+            {"label": "implementation", "path": "client/web/src/pages"},
+            {"label": "capture assets", "path": "sdd/99_toolchain/01_automation/assets/web_screen_capture"},
+        ],
+        "screens": [
+            screen(
+                code="WEB-S001",
+                name="Web Login",
+                route="/login",
+                access="public",
+                features=["AUT-F001", "AUT-F002"],
+                asset="login.png",
+                requires_auth=False,
+                callouts=[
+                    ((0.25, 0.31), "서비스 소개 카피", "실제 API 인증 흐름과 로그인 이후 앱 셸 진입 방식을 좌측 설명 영역에서 안내한다."),
+                    ((0.78, 0.21), "Sign in 헤더", "web 로그인 목적과 예시 계정 프리셋 상태를 보여준다."),
+                    ((0.78, 0.38), "자격 증명 입력", "이메일과 비밀번호를 입력하고 오류 상태를 같은 카드 안에서 확인한다."),
+                    ((0.78, 0.48), "Continue CTA", "인증 성공 시 저장된 토큰으로 `auth/me`를 다시 호출한 뒤 보호 라우트로 이동한다."),
+                ],
+            ),
+            screen(
+                code="WEB-S002",
+                name="Web Dashboard",
+                route="/",
+                access="protected",
+                features=["AUT-F002", "ORD-F001"],
+                asset="dashboard.png",
+                requires_auth=True,
+                callouts=[
+                    ((0.17, 0.09), "상단 앱 셸", "브랜드, Overview/Orders 전환, 검색, 알림, 사용자 액션을 한 줄 헤더로 제공한다."),
+                    ((0.26, 0.25), "운영 통계 카드", "주문 overview 핵심 지표와 로딩 또는 오류 상태를 상단 카드 묶음으로 보여준다."),
+                    ((0.34, 0.60), "Recent activity 표", "최근 주문 이벤트를 주문 ID, 일자, customer, 상태 기준으로 읽는 메인 데이터 테이블이다."),
+                    ((0.83, 0.55), "Selected detail 패널", "선택 주문의 product, customer, status, amount를 보조 패널에서 확인한다."),
+                ],
+            ),
+            screen(
+                code="WEB-S003",
+                name="Web Orders",
+                route="/orders",
+                access="protected",
+                features=["AUT-F002", "ORD-F002"],
+                asset="orders.png",
+                requires_auth=True,
+                callouts=[
+                    ((0.17, 0.09), "상단 앱 셸", "Overview와 Orders 간 전환, 검색, 알림, 로그아웃 등 공통 워크스페이스 셸을 유지한다."),
+                    ((0.36, 0.25), "검색/필터 바", "Search orders 입력값으로 product, customer, 상태, 주문 ID를 클라이언트 필터링한다."),
+                    ((0.78, 0.25), "액션 버튼", "Reset으로 필터를 초기화하고 New order CTA로 신규 흐름 진입점을 노출한다."),
+                    ((0.44, 0.61), "주문 목록 테이블", "주문 ID, product, customer, 상태를 기준으로 현재 결과 집합을 표 형태로 보여준다."),
+                ],
+            ),
+        ],
+    },
+    "admin": {
+        "title": "Templates Admin Screen Spec",
+        "service_label": "admin",
+        "output": str(SCREEN_DIR / "admin_screen_spec.pdf"),
+        "asset_dir": str(ASSET_DIR / "admin_screen_capture"),
+        "base_url": "http://127.0.0.1:4000",
+        "api_base": "http://127.0.0.1:8000/api/v1",
+        "storage_key": "admin.auth.token",
+        "capture_policy": DESKTOP_CAPTURE_POLICY,
+        "trim_background": False,
+        "cover_note": "첫 페이지는 admin 화면코드 인덱스다. 이후 페이지는 좌측 화면 캡처와 우측 번호형 기능 테이블을 함께 제공한다.",
+        "source_refs": [
+            {"label": "implementation", "path": "client/admin/src/app/App.tsx"},
+            {"label": "implementation", "path": "client/admin/src/pages"},
+            {"label": "capture assets", "path": "sdd/99_toolchain/01_automation/assets/admin_screen_capture"},
+        ],
+        "screens": [
+            screen(
+                code="ADM-S001",
+                name="Admin Login",
+                route="/login",
+                access="public",
+                features=["AUT-F001", "AUT-F002"],
+                asset="login.png",
+                requires_auth=False,
+                callouts=[
+                    ((0.24, 0.34), "운영 콘솔 소개 영역", "좌측 다크 패널에서 Admin console 컨텍스트와 실로그인 인증 흐름을 설명한다."),
+                    ((0.79, 0.18), "Restricted access 헤더", "관리자 접근 제어 맥락과 Sign in 제목을 우측 카드 상단에 배치한다."),
+                    ((0.79, 0.36), "자격 증명 입력", "이메일, 비밀번호, 오류 메시지를 한 폼 안에서 처리한다."),
+                    ((0.79, 0.48), "Open admin console CTA", "성공 시 관리자 토큰 저장 후 운영 셸로 진입한다."),
+                ],
+            ),
+            screen(
+                code="ADM-S002",
+                name="Admin Dashboard",
+                route="/",
+                access="protected",
+                features=["AUT-F002", "ORD-F003"],
+                asset="dashboard.png",
+                requires_auth=True,
+                callouts=[
+                    ((0.08, 0.35), "좌측 운영 레일", "대시보드, 거래 관리, 고객지원으로 이동하는 관리자 전용 내비게이션 레일이다."),
+                    ((0.40, 0.18), "운영 요약 카드", "운영 핵심 수치를 카드 단위로 먼저 요약해 전체 상태를 빠르게 파악하게 한다."),
+                    ((0.37, 0.58), "거래 상태별 현황", "단계별 거래 건수를 리스트형 카드로 보여주는 메인 분석 영역이다."),
+                    ((0.79, 0.58), "운영 알림", "위험/일반 알림을 tone별 카드로 묶어 후속 조치를 안내한다."),
+                ],
+            ),
+            screen(
+                code="ADM-S003",
+                name="Admin Queue",
+                route="/queue",
+                access="protected",
+                features=["AUT-F002", "ORD-F003"],
+                asset="queue.png",
+                requires_auth=True,
+                callouts=[
+                    ((0.08, 0.35), "좌측 운영 레일", "현재 거래 관리 섹션 위치를 강조하면서 다른 운영 화면으로 이동할 수 있다."),
+                    ((0.33, 0.24), "거래관리 헤더", "현재 큐 화면 제목과 전체 거래 건수를 요약해 상단에 고정한다."),
+                    ((0.44, 0.60), "거래 큐 테이블", "주문 ID, 상품, 고객 정보를 기준으로 관리자 작업 대상을 표로 노출한다."),
+                    ((0.82, 0.60), "상태/SLA 열", "운영 우선순위 판단에 필요한 상태와 SLA 정보를 같은 행에서 확인하게 한다."),
+                ],
+            ),
+            screen(
+                code="ADM-S004",
+                name="Admin Support",
+                route="/support",
+                access="protected",
+                features=["AUT-F002", "SUP-F001"],
+                asset="support.png",
+                requires_auth=True,
+                callouts=[
+                    ((0.08, 0.35), "좌측 운영 레일", "고객지원 섹션과 다른 관리자 기능을 오가는 공통 운영 내비게이션이다."),
+                    ((0.37, 0.21), "FAQ 관리 헤더", "현재 화면이 FAQ 운영 surface임을 제목으로 표시한다."),
+                    ((0.46, 0.55), "FAQ 목록", "질문과 노출 상태를 row 단위 카드로 보여주는 읽기 모델 영역이다."),
+                    ((0.86, 0.09), "상단 글로벌 액션", "알림, 현재 사용자, 로그아웃 등 관리자 공통 액션을 상단 바에 유지한다."),
+                ],
+            ),
+        ],
+    },
+    "mobile": {
+        "title": "Templates Mobile Screen Spec",
+        "service_label": "mobile",
+        "output": str(SCREEN_DIR / "mobile_screen_spec.pdf"),
+        "asset_dir": str(ASSET_DIR / "mobile_screen_capture"),
+        "base_url": "http://127.0.0.1:3002",
+        "api_base": "http://127.0.0.1:8000/api/v1",
+        "storage_key": "mobile.auth.token",
+        "capture_policy": DESKTOP_CAPTURE_POLICY,
+        "trim_background": False,
+        "cover_note": "첫 페이지는 mobile 화면코드 인덱스다. 이후 페이지는 좌측 화면 캡처와 우측 번호형 기능 테이블을 함께 제공한다.",
+        "source_refs": [
+            {"label": "implementation", "path": "client/mobile/src/app/App.tsx"},
+            {"label": "implementation", "path": "client/mobile/src/pages"},
+            {"label": "capture assets", "path": "sdd/99_toolchain/01_automation/assets/mobile_screen_capture"},
+        ],
+        "screens": [
+            screen(
+                code="MOB-S001",
+                name="Mobile Login",
+                route="/login",
+                access="public",
+                features=["AUT-F001", "AUT-F002"],
+                asset="login.png",
+                requires_auth=False,
+                callouts=[
+                    ((0.25, 0.32), "IN 소개 영역", "상담 흐름과 운영 상태를 동시에 여는 템플릿 맥락을 좌측 hero에서 설명한다."),
+                    ((0.79, 0.19), "Sign in 헤더", "IN workspace 진입 목적과 operator 기본 계정을 우측 로그인 카드 상단에 표시한다."),
+                    ((0.79, 0.39), "자격 증명 입력", "operator@example.com 기준 로그인 입력과 오류 상태를 한 폼에서 처리한다."),
+                    ((0.79, 0.49), "Continue CTA", "로그인 성공 시 저장된 세션으로 IN 보호 라우트에 진입한다."),
+                ],
+            ),
+            screen(
+                code="MOB-S002",
+                name="Mobile Dashboard",
+                route="/",
+                access="protected",
+                features=["AUT-F002", "FUL-F001"],
+                asset="dashboard.png",
+                requires_auth=True,
+                callouts=[
+                    ((0.15, 0.11), "상단 IN 셸", "Overview/Fulfillment 전환, relay status pill, 사용자 정보, 로그아웃을 묶은 공통 헤더다."),
+                    ((0.34, 0.25), "Units in motion hero", "현재 이행 중인 unit 수와 모바일 워크스페이스 목적을 한눈에 보여주는 대형 hero section이다."),
+                    ((0.27, 0.48), "운영 통계 카드", "Open tasks, blocked, outbound ready 지표를 카드 묶음으로 제공한다."),
+                    ((0.33, 0.79), "Relay timeline", "패킹, 예외 검토, 출고 준비 이벤트를 시간축 카드로 정리한다."),
+                    ((0.83, 0.60), "Stage load", "단계별 작업량과 병목 구간을 우측 보조 패널에서 보여준다."),
+                ],
+            ),
+            screen(
+                code="MOB-S003",
+                name="Mobile Fulfillment",
+                route="/fulfillment",
+                access="protected",
+                features=["AUT-F002", "FUL-F002"],
+                asset="fulfillment.png",
+                requires_auth=True,
+                callouts=[
+                    ((0.15, 0.11), "상단 IN 셸", "Fulfillment 화면에서도 Overview/Fulfillment 전환과 사용자 액션이 동일한 헤더 구조를 유지한다."),
+                    ((0.36, 0.23), "Fulfillment board 헤더", "현재 이행 보드 화면의 제목과 task surface 설명을 상단에서 제공한다."),
+                    ((0.39, 0.58), "Fulfillment board 테이블", "Order, task, assignee, status, SLA를 행 단위로 정리한 메인 운영 테이블이다."),
+                    ((0.83, 0.59), "Fulfillment notes", "이행 메모와 운영 체크포인트를 별도 패널로 분리해 보조 컨텍스트를 제공한다."),
+                ],
+            ),
+        ],
+    },
+    "landing": {
+        "title": "Templates Landing Screen Spec",
+        "service_label": "landing",
+        "output": str(SCREEN_DIR / "landing_screen_spec.pdf"),
+        "asset_dir": str(ASSET_DIR / "landing_screen_capture"),
+        "base_url": "http://127.0.0.1:3000",
+        "api_base": "http://127.0.0.1:8000/api/v1",
+        "storage_key": "landing.auth.token",
+        "capture_policy": DESKTOP_CAPTURE_POLICY,
+        "trim_background": False,
+        "cover_note": "첫 페이지는 landing 화면코드 인덱스다. 이후 페이지는 좌측 화면 캡처와 우측 번호형 기능 테이블을 함께 제공한다.",
+        "source_refs": [
+            {"label": "implementation", "path": "client/landing/src/App.tsx"},
+            {"label": "implementation", "path": "client/landing/src/pages"},
+            {"label": "capture assets", "path": "sdd/99_toolchain/01_automation/assets/landing_screen_capture"},
+        ],
+        "screens": [
+            screen(
+                code="LND-S001",
+                name="Landing Home",
+                route="/",
+                access="public",
+                features=["CAT-F001", "AUT-F002"],
+                asset="home.png",
+                requires_auth=False,
+                callouts=[
+                    ((0.16, 0.05), "글로벌 헤더", "브랜드, 섹션 앵커, 로그인 또는 workspace handoff 링크를 상단 헤더에 배치한다."),
+                    ((0.27, 0.20), "히어로 메시지와 CTA", "서비스 가치 제안과 Sign in/See examples CTA를 첫 섹션에서 강조한다."),
+                    ((0.77, 0.25), "카탈로그 스냅샷", "실시간 product 수, active count, highlighted catalog 상태를 요약 카드로 보여준다."),
+                    ((0.30, 0.56), "Features grid", "라이브 catalog product를 카드 그리드로 노출하는 예시 섹션이다."),
+                    ((0.50, 0.75), "Live proof 섹션", "`/api/v1/catalog/products` 기반 sync 결과를 집계 카드와 함께 증빙한다."),
+                    ((0.50, 0.92), "마무리 CTA", "템플릿 시작 CTA로 로그인 또는 workspace 진입을 유도하는 하단 배너다."),
+                ],
+            ),
+            screen(
+                code="LND-S002",
+                name="Landing Login",
+                route="/login",
+                access="public",
+                features=["AUT-F001", "AUT-F002"],
+                asset="login.png",
+                requires_auth=False,
+                callouts=[
+                    ((0.24, 0.34), "랜딩 소개 패널", "로그인 후 `/workspace`로 이어지는 흐름과 landing 복귀 링크를 좌측 소개 영역에서 설명한다."),
+                    ((0.78, 0.20), "Sign in 헤더", "멤버 접근 맥락과 workspace 진입 목적을 우측 로그인 폼 상단에 둔다."),
+                    ((0.78, 0.39), "자격 증명 입력", "이메일, 비밀번호, 오류 메시지를 같은 카드 안에서 처리한다."),
+                    ((0.78, 0.50), "Continue CTA", "성공 시 토큰 저장 후 보호된 `/workspace`로 이동한다."),
+                ],
+            ),
+            screen(
+                code="LND-S003",
+                name="Landing Workspace",
+                route="/workspace",
+                access="protected",
+                features=["AUT-F002", "CAT-F001"],
+                asset="workspace.png",
+                requires_auth=True,
+                callouts=[
+                    ((0.16, 0.07), "멤버 셸 헤더", "Workspace 링크, 현재 사용자, 로그아웃을 포함한 보호 라우트 전용 헤더다."),
+                    ((0.30, 0.32), "Protected workspace 카드", "인증된 사용자 전용 shell 설명과 catalog sync 상태를 메인 카드에 배치한다."),
+                    ((0.77, 0.32), "Current member 카드", "현재 로그인 사용자의 email, role, status를 우측 패널에서 보여준다."),
+                    ((0.30, 0.78), "Workspace product grid", "보호 라우트 안에서 조회한 product 목록을 카드 그리드로 렌더링한다."),
+                ],
+            ),
+        ],
+    },
+}

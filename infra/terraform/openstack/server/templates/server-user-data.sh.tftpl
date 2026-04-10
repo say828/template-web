@@ -1,0 +1,50 @@
+#!/bin/bash
+set -Eeuo pipefail
+
+mkdir -p ${runtime_root}
+
+cat > ${runtime_root}/server.env <<'ENVEOF'
+${backend_env_text}
+ENVEOF
+
+install_container_runtime() {
+  if command -v apt-get >/dev/null 2>&1; then
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y docker.io git ca-certificates curl
+  elif command -v dnf >/dev/null 2>&1; then
+    dnf update -y
+    dnf install -y docker git ca-certificates curl
+  else
+    yum update -y
+    yum install -y docker git ca-certificates curl
+  fi
+
+  systemctl enable docker
+  systemctl start docker
+  usermod -aG docker ubuntu >/dev/null 2>&1 || true
+
+  docker rm -f ${backend_container_name} >/dev/null 2>&1 || true
+
+  if [ -n "${backend_container_image}" ]; then
+    docker pull "${backend_container_image}"
+    docker run -d \
+      --name "${backend_container_name}" \
+      --restart unless-stopped \
+      --env-file ${runtime_root}/server.env \
+      -p ${backend_port}:${backend_port} \
+      "${backend_container_image}"
+  elif [ -n "${backend_repo_url}" ]; then
+    rm -rf "${runtime_root}/src"
+    git clone --depth 1 --branch "${backend_repo_ref}" "${backend_repo_url}" "${runtime_root}/src"
+    docker build -t ${backend_container_name}:bootstrap "${runtime_root}/src/${backend_repo_subdir}"
+    docker run -d \
+      --name "${backend_container_name}" \
+      --restart unless-stopped \
+      --env-file ${runtime_root}/server.env \
+      -p ${backend_port}:${backend_port} \
+      ${backend_container_name}:bootstrap
+  fi
+}
+
+install_container_runtime

@@ -1,0 +1,149 @@
+name: templates
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-template}
+      POSTGRES_USER: ${POSTGRES_USER:-template}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-template}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-template} -d ${POSTGRES_DB:-template}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - template-dev
+
+  mysql:
+    image: mysql:8.4
+    profiles: ["mysql"]
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-template}
+      MYSQL_USER: ${MYSQL_USER:-template}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-template}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-template-root}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -u${MYSQL_USER:-template} -p${MYSQL_PASSWORD:-template}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - template-dev
+
+  mariadb:
+    image: mariadb:11.7
+    profiles: ["mariadb"]
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-template}
+      MARIADB_USER: ${MARIADB_USER:-template}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-template}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-template-root}
+    ports:
+      - "${MARIADB_PORT:-3307}:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mariadb-admin ping -h 127.0.0.1 -u${MARIADB_USER:-template} -p${MARIADB_PASSWORD:-template}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - template-dev
+
+  mongo:
+    image: mongo:8
+    profiles: ["mongo"]
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - template-dev
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile.dev
+      network: host
+    environment:
+      APP_NAME: ${SERVER_APP_NAME:-Template Server}
+      ENVIRONMENT: ${SERVER_ENVIRONMENT:-development}
+      API_PREFIX: ${SERVER_API_PREFIX:-/api/v1}
+      DATABASE_BACKEND: ${SERVER_DATABASE_BACKEND:-postgres}
+      POSTGRES_URL: ${SERVER_POSTGRES_URL:-postgresql+psycopg://template:template@postgres:5432/template}
+      MYSQL_URL: ${SERVER_MYSQL_URL:-mysql+pymysql://template:template@mysql:3306/template}
+      MARIADB_URL: ${SERVER_MARIADB_URL:-mysql+pymysql://template:template@mariadb:3306/template}
+      MONGODB_URL: ${SERVER_MONGODB_URL:-mongodb://mongo:27017}
+      MONGODB_DATABASE: ${SERVER_MONGODB_DATABASE:-template}
+      JWT_SECRET: ${SERVER_JWT_SECRET:-template-local-dev-secret}
+      JWT_ALGORITHM: ${SERVER_JWT_ALGORITHM:-HS256}
+      ACCESS_TOKEN_TTL_MINUTES: ${SERVER_ACCESS_TOKEN_TTL_MINUTES:-120}
+      BOOTSTRAP_ADMIN_EMAIL: ${SERVER_BOOTSTRAP_ADMIN_EMAIL:-admin@example.com}
+      BOOTSTRAP_ADMIN_PASSWORD: ${SERVER_BOOTSTRAP_ADMIN_PASSWORD:-change-me-admin}
+      BOOTSTRAP_ADMIN_NAME: ${SERVER_BOOTSTRAP_ADMIN_NAME:-Template Admin}
+      BOOTSTRAP_OPERATOR_EMAIL: ${SERVER_BOOTSTRAP_OPERATOR_EMAIL:-operator@example.com}
+      BOOTSTRAP_OPERATOR_PASSWORD: ${SERVER_BOOTSTRAP_OPERATOR_PASSWORD:-change-me-operator}
+      BOOTSTRAP_OPERATOR_NAME: ${SERVER_BOOTSTRAP_OPERATOR_NAME:-Template Operator}
+      CORS_ORIGINS: '${SERVER_CORS_ORIGINS:-["http://localhost:3001","http://127.0.0.1:3001"]}'
+      SERVER_HTTP_PORT: ${SERVER_HTTP_PORT:-8000}
+    ports:
+      - "${SERVER_HTTP_PORT:-8000}:${SERVER_HTTP_PORT:-8000}"
+    volumes:
+      - ./server:/app/server
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - template-dev
+
+  client-web:
+    build:
+      context: .
+      dockerfile: client/web/Dockerfile.dev
+      network: host
+    environment:
+      PORT: ${CLIENT_WEB_PORT:-3001}
+      VITE_API_BASE_URL: ${CLIENT_WEB_VITE_API_BASE_URL:-http://127.0.0.1:8000/api/v1}
+      CHOKIDAR_USEPOLLING: ${CLIENT_WATCH_USE_POLLING:-false}
+    ports:
+      - "${CLIENT_WEB_PORT:-3001}:${CLIENT_WEB_PORT:-3001}"
+    volumes:
+      - ./client/web:/app/client/web
+    depends_on:
+      server:
+        condition: service_started
+    networks:
+      - template-dev
+
+networks:
+  template-dev:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mysql_data:
+  mariadb_data:
+  mongo_data:

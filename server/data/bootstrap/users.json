@@ -1,0 +1,20 @@
+[
+  {
+    "id": "user-1",
+    "name": "Template Admin",
+    "email": "admin@example.com",
+    "role": "admin",
+    "status": "active",
+    "timezone": "Asia/Seoul",
+    "last_login_at": "2026-03-10T14:30:00+09:00"
+  },
+  {
+    "id": "user-2",
+    "name": "Template Operator",
+    "email": "operator@example.com",
+    "role": "operator",
+    "status": "active",
+    "timezone": "Asia/Seoul",
+    "last_login_at": "2026-03-10T11:12:00+09:00"
+  }
+]

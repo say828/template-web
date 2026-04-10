@@ -1,0 +1,18 @@
+[
+  {
+    "id": "user-1",
+    "name": "Template Admin",
+    "email": "admin@example.com",
+    "role": "admin",
+    "status": "active",
+    "password_source": "bootstrap_admin_password"
+  },
+  {
+    "id": "user-2",
+    "name": "Template Operator",
+    "email": "operator@example.com",
+    "role": "operator",
+    "status": "active",
+    "password_source": "bootstrap_operator_password"
+  }
+]

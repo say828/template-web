@@ -1,0 +1,23 @@
+kind: ui-parity
+metadata:
+  service: templates
+  owner: replace-me
+  generated_by: sdd/99_toolchain/01_automation/ui-parity/cli/scaffold-contract.mjs
+spec:
+  target_base_url: http://127.0.0.1:4301
+  adapter_path: client/web/scripts/ui-parity-web-adapter.mjs
+screens:
+  - id: TMP_001
+    route: /
+    reference_image: sdd/03_verify/10_test/ui_parity/reference/TMP_001.png
+    max_diff_ratio: 0
+    allow_resize: false
+    pixelmatch_threshold: 0.1
+    include_aa: true
+    capture_full_page: false
+    viewport:
+      width: 1440
+      height: 1024
+    mask_rects: []
+    notes:
+      - Replace screen ids, routes, and reference assets for the cloned service.

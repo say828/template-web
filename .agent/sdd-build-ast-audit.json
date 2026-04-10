@@ -1,0 +1,13 @@
+{
+  "scores": {
+    "ast_similarity": 10,
+    "implementation_traceability": 10,
+    "human_agent_readability": 10
+  },
+  "all_ten": true,
+  "findings": {
+    "ast_similarity": [],
+    "implementation_traceability": [],
+    "human_agent_readability": []
+  }
+}

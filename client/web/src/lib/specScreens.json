@@ -1,0 +1,17 @@
+[
+  {
+    "id": "TMP_001",
+    "title": "Dashboard",
+    "tags": ["core", "workspace"]
+  },
+  {
+    "id": "TMP_002",
+    "title": "Orders",
+    "tags": ["operations", "list"]
+  },
+  {
+    "id": "TMP_003",
+    "title": "Login",
+    "tags": ["auth"]
+  }
+]

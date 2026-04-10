@@ -1,0 +1,13 @@
+{
+  "updated_at": "2026-03-19T00:00:00Z",
+  "story_id": "",
+  "max_iterations": 12,
+  "current_iteration": 0,
+  "status": "idle",
+  "completion_promise": "STORY_COMPLETE",
+  "promise_seen": false,
+  "last_exit_code": 0,
+  "prompt_snapshot": "",
+  "output_file": "",
+  "changed_files": []
+}

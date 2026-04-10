@@ -1,0 +1,42 @@
+{
+  "name": "@do4ai/client-web-template",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.32.0",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 3001",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4301",
+    "ui:parity:init": "bash ../../sdd/99_toolchain/01_automation/agentic-dev/init_frontend_parity.sh ../.. web",
+    "ui:parity:bootstrap": "bash ../../sdd/99_toolchain/01_automation/agentic-dev/bootstrap_frontend_parity.sh ../.. web",
+    "ui:parity:scaffold": "bash ../../sdd/99_toolchain/01_automation/agentic-dev/run_frontend_target.sh scaffold ../.. web",
+    "ui:parity:materialize-references": "bash ../../sdd/99_toolchain/01_automation/agentic-dev/run_frontend_target.sh materialize_references ../.. web",
+    "ui:parity:route-gap": "bash ../../sdd/99_toolchain/01_automation/agentic-dev/run_frontend_target.sh route_gap ../.. web",
+    "ui:parity:proof": "bash ../../sdd/99_toolchain/01_automation/agentic-dev/run_frontend_target.sh proof ../.. web",
+    "ui:parity": "npm run ui:parity:proof"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.576.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.4.21",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.19",
+    "yaml": "^2.8.1"
+  }
+}

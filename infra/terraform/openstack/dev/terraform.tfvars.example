@@ -1,0 +1,54 @@
+auth_url      = "https://keystone.example.com:5000/v3"
+region        = "RegionOne"
+interface     = "public"
+auth_type     = "password"
+username      = "devops"
+password      = "change-me"
+project_name  = "service-dev"
+user_domain_name    = "Default"
+project_domain_name = "Default"
+insecure      = false
+
+create_network      = true
+network_name        = "templates-dev-net"
+subnet_name         = "templates-dev-subnet"
+subnet_cidr         = "10.250.10.0/24"
+create_router       = true
+router_name         = "templates-dev-router"
+external_network_id = "public"
+
+service_allowed_cidrs = ["0.0.0.0/0"]
+ssh_allowed_cidrs     = ["203.0.113.10/32"]
+
+name               = "templates-dev"
+image_name         = "ubuntu-22.04"
+flavor_name        = "m1.medium"
+keypair_name       = "devops"
+assign_floating_ip = true
+floating_ip_pool   = "public"
+repo_clone_url     = "git@github.com:your-org/templates.git"
+repo_ref           = "main"
+deploy_compose_on_boot = true
+compose_env_content = <<-ENV
+  DEV_POSTGRES_DB=template
+  DEV_POSTGRES_USER=template
+  DEV_POSTGRES_PASSWORD=template
+  DEV_POSTGRES_PORT=15432
+  DEV_SERVER_HTTP_PORT=18000
+  DEV_SERVER_APP_NAME=Template Server DEV
+  DEV_SERVER_ENVIRONMENT=development
+  DEV_SERVER_API_PREFIX=/api/v1
+  DEV_SERVER_DATABASE_BACKEND=postgres
+  DEV_SERVER_POSTGRES_URL=postgresql+psycopg://template:template@postgres:5432/template
+  DEV_SERVER_JWT_SECRET=change-me
+  DEV_SERVER_ACCESS_TOKEN_TTL_MINUTES=120
+  DEV_SERVER_CORS_ORIGINS=https://dev-landing.example.com,https://dev-web.example.com,https://dev-mobile.example.com,https://dev-admin.example.com
+  DEV_CLIENT_LANDING_PORT=13000
+  DEV_CLIENT_WEB_PORT=13001
+  DEV_CLIENT_MOBILE_PORT=13002
+  DEV_CLIENT_ADMIN_PORT=14000
+  DEV_CLIENT_LANDING_VITE_API_BASE_URL=https://dev-api.example.com/api/v1
+  DEV_CLIENT_WEB_VITE_API_BASE_URL=https://dev-api.example.com/api/v1
+  DEV_CLIENT_MOBILE_VITE_API_BASE_URL=https://dev-api.example.com/api/v1
+  DEV_CLIENT_ADMIN_VITE_API_BASE_URL=https://dev-api.example.com/api/v1
+ENV

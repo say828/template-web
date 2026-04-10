@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-family: "SUIT", "Pretendard", "Noto Sans KR", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--app-shell-bg, #f5f7fb);
+}
+
+* {
+  box-sizing: border-box;
+}

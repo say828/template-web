@@ -1,0 +1,126 @@
+name: templates-prod
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: templates-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${PROD_POSTGRES_DB:-template}
+      POSTGRES_USER: ${PROD_POSTGRES_USER:-template}
+      POSTGRES_PASSWORD: ${PROD_POSTGRES_PASSWORD:-template}
+    ports:
+      - "${PROD_POSTGRES_PORT:-25432}:5432"
+    volumes:
+      - templates-postgres-prod-data:/var/lib/postgresql/data
+    networks:
+      - templates-prod
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PROD_POSTGRES_USER:-template} -d ${PROD_POSTGRES_DB:-template}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ../../server
+      dockerfile: Dockerfile
+    container_name: templates-server-prod
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["sh", "-lc", "uvicorn api.http.app:app --host 0.0.0.0 --port 8000 --workers ${PROD_SERVER_WORKERS:-4}"]
+    environment:
+      APP_NAME: ${PROD_SERVER_APP_NAME:-Template Server PROD}
+      ENVIRONMENT: ${PROD_SERVER_ENVIRONMENT:-production}
+      API_PREFIX: ${PROD_SERVER_API_PREFIX:-/api/v1}
+      DATABASE_BACKEND: ${PROD_SERVER_DATABASE_BACKEND:-postgres}
+      POSTGRES_URL: ${PROD_SERVER_POSTGRES_URL:-postgresql+psycopg://template:template@postgres:5432/template}
+      MYSQL_URL: ${PROD_SERVER_MYSQL_URL:-mysql+pymysql://template:template@mysql:3306/template}
+      MARIADB_URL: ${PROD_SERVER_MARIADB_URL:-mysql+pymysql://template:template@mariadb:3306/template}
+      MONGODB_URL: ${PROD_SERVER_MONGODB_URL:-mongodb://mongo:27017}
+      MONGODB_DATABASE: ${PROD_SERVER_MONGODB_DATABASE:-template}
+      JWT_SECRET: ${PROD_SERVER_JWT_SECRET:-change-me}
+      ACCESS_TOKEN_TTL_MINUTES: ${PROD_SERVER_ACCESS_TOKEN_TTL_MINUTES:-120}
+      CORS_ORIGINS: ${PROD_SERVER_CORS_ORIGINS:-https://landing.example.com,https://web.example.com,https://mobile.example.com,https://admin.example.com}
+    ports:
+      - "${PROD_SERVER_HTTP_PORT:-28000}:8000"
+    networks:
+      - templates-prod
+
+  client-landing:
+    build:
+      context: ../..
+      dockerfile: client/landing/Dockerfile
+    container_name: templates-client-landing-prod
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_started
+    command: ["sh", "-lc", "pnpm build && pnpm preview --host 0.0.0.0 --port 4300"]
+    environment:
+      VITE_API_BASE_URL: ${PROD_CLIENT_LANDING_VITE_API_BASE_URL}
+    ports:
+      - "${PROD_CLIENT_LANDING_PORT:-23000}:4300"
+    networks:
+      - templates-prod
+
+  client-web:
+    build:
+      context: ../..
+      dockerfile: client/web/Dockerfile
+    container_name: templates-client-web-prod
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_started
+    command: ["sh", "-lc", "pnpm build && pnpm preview --host 0.0.0.0 --port 4301"]
+    environment:
+      VITE_API_BASE_URL: ${PROD_CLIENT_WEB_VITE_API_BASE_URL}
+    ports:
+      - "${PROD_CLIENT_WEB_PORT:-23001}:4301"
+    networks:
+      - templates-prod
+
+  client-mobile:
+    build:
+      context: ../..
+      dockerfile: client/mobile/Dockerfile
+    container_name: templates-client-mobile-prod
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_started
+    command: ["sh", "-lc", "pnpm build && pnpm preview --host 0.0.0.0 --port 4302"]
+    environment:
+      VITE_API_BASE_URL: ${PROD_CLIENT_MOBILE_VITE_API_BASE_URL}
+    ports:
+      - "${PROD_CLIENT_MOBILE_PORT:-23002}:4302"
+    networks:
+      - templates-prod
+
+  client-admin:
+    build:
+      context: ../..
+      dockerfile: client/admin/Dockerfile
+    container_name: templates-client-admin-prod
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_started
+    command: ["sh", "-lc", "pnpm build && pnpm preview --host 0.0.0.0 --port 4400"]
+    environment:
+      VITE_API_BASE_URL: ${PROD_CLIENT_ADMIN_VITE_API_BASE_URL}
+    ports:
+      - "${PROD_CLIENT_ADMIN_PORT:-24000}:4400"
+    networks:
+      - templates-prod
+
+networks:
+  templates-prod:
+    name: templates-prod
+
+volumes:
+  templates-postgres-prod-data:
+    name: templates-postgres-prod-data

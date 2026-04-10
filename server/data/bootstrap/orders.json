@@ -1,0 +1,62 @@
+[
+  {
+    "id": "ORD-24051",
+    "product_id": "prd-1",
+    "product_name": "Operations Console Starter",
+    "customer_name": "Seoul Commerce",
+    "seller_name": "Do4AI Mobility",
+    "status": "Pending",
+    "fulfillment_status": "Picking",
+    "created_at": "2026.03.14",
+    "amount_krw": 840000,
+    "risk": "risk",
+    "stage": "결제 대기",
+    "sla": "45 min",
+    "is_new_today": true
+  },
+  {
+    "id": "ORD-24052",
+    "product_id": "prd-2",
+    "product_name": "Customer App Foundation",
+    "customer_name": "Busan Retail Lab",
+    "seller_name": "Do4AI Commerce",
+    "status": "Paid",
+    "fulfillment_status": "Shipping",
+    "created_at": "2026.03.14",
+    "amount_krw": 620000,
+    "risk": "ok",
+    "stage": "배송 준비",
+    "sla": "70 min",
+    "is_new_today": true
+  },
+  {
+    "id": "ORD-24053",
+    "product_id": "prd-3",
+    "product_name": "Landing Funnel Experiment",
+    "customer_name": "Growth Studio",
+    "seller_name": "Growth Lab",
+    "status": "At risk",
+    "fulfillment_status": "Exception",
+    "created_at": "2026.03.13",
+    "amount_krw": 380000,
+    "risk": "risk",
+    "stage": "예외 검토",
+    "sla": "120 min",
+    "is_new_today": false
+  },
+  {
+    "id": "ORD-24054",
+    "product_id": "prd-1",
+    "product_name": "Operations Console Starter",
+    "customer_name": "West Hub Market",
+    "seller_name": "Do4AI Mobility",
+    "status": "Pending",
+    "fulfillment_status": "Queued",
+    "created_at": "2026.03.13",
+    "amount_krw": 560000,
+    "risk": "ok",
+    "stage": "출고 대기",
+    "sla": "55 min",
+    "is_new_today": false
+  }
+]

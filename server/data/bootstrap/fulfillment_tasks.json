@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ft-1",
+    "order_id": "ORD-24051",
+    "title": "Reserve inbound QA inspection slot",
+    "assignee": "Warehouse A",
+    "stage": "Inbound",
+    "status": "Queued",
+    "priority": "Critical",
+    "channel": "Marketplace",
+    "sla_minutes": 45,
+    "units": 1
+  },
+  {
+    "id": "ft-2",
+    "order_id": "ORD-24052",
+    "title": "Confirm packing checklist",
+    "assignee": "Ops Desk",
+    "stage": "Packing",
+    "status": "In progress",
+    "priority": "High",
+    "channel": "Direct",
+    "sla_minutes": 30,
+    "units": 2
+  },
+  {
+    "id": "ft-3",
+    "order_id": "ORD-24053",
+    "title": "Resolve address verification hold",
+    "assignee": "Exception Desk",
+    "stage": "Exception",
+    "status": "Blocked",
+    "priority": "Critical",
+    "channel": "Marketplace",
+    "sla_minutes": 20,
+    "units": 1
+  },
+  {
+    "id": "ft-4",
+    "order_id": "ORD-24054",
+    "title": "Hand off to outbound carrier",
+    "assignee": "Dispatch",
+    "stage": "Outbound",
+    "status": "Queued",
+    "priority": "Normal",
+    "channel": "Direct",
+    "sla_minutes": 60,
+    "units": 1
+  }
+]

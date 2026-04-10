@@ -1,0 +1,5 @@
+[
+  { "id": "fn-1", "note": "Blocked tasks should stay visible in the board header until cleared.", "emphasis": "warning" },
+  { "id": "fn-2", "note": "Outbound handoff needs a tighter SLA once same-day carrier pickup goes live.", "emphasis": "accent" },
+  { "id": "fn-3", "note": "Marketplace orders tend to create exception handling work in address verification.", "emphasis": "neutral" }
+]

@@ -1,0 +1,6 @@
+phase       = "dev"
+root_domain = "example.com"
+aws_region  = "ap-northeast-2"
+target_ip   = "203.0.113.10"
+ttl         = 60
+enabled     = true

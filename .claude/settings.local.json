@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -type f \\\\\\( -name \"*.tsx\" -o -name \"*.jsx\" -o -name \"*.ts\" -o -name \"*.js\" \\\\\\) 2>/dev/null | head -30)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}

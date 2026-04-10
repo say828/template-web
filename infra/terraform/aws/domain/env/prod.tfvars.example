@@ -1,0 +1,7 @@
+phase        = "prod"
+root_domain  = "example.com"
+service_fqdn = "app.example.com"
+aws_region   = "ap-northeast-2"
+target_ip    = "203.0.113.20"
+ttl          = 60
+enabled      = true

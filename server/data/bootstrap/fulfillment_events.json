@@ -1,0 +1,5 @@
+[
+  { "time": "09:05", "title": "Inbound slot capacity refreshed", "tone": "accent" },
+  { "time": "10:15", "title": "Packing queue reprioritized for express orders", "tone": "warning" },
+  { "time": "11:30", "title": "Outbound carrier window confirmed", "tone": "success" }
+]

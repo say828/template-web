@@ -1,0 +1,29 @@
+{
+  "auth_type": "password",
+  "auth_url": "https://keystone.example.com:5000/v3",
+  "backend_repo_ref": "main",
+  "backend_repo_url": "https://github.com/example-org/example-service.git",
+  "backend_image_name": "ubuntu-24.04-noble-amd64",
+  "backend_port": 8080,
+  "instance_flavor_name": "m1.small",
+  "ssh_ingress_cidrs": ["0.0.0.0/0"],
+  "ssh_keypair_name": "template-dev-terminal",
+  "ssh_public_key": "ssh-ed25519 AAAA... replace-me",
+  "insecure": false,
+  "interface": "public",
+  "phase": "dev",
+  "external_network_name": "public",
+  "app_subnet_cidr": "10.52.0.0/24",
+  "project_domain_name": "Default",
+  "project_name": "template-service",
+  "region": "RegionOne",
+  "service_name": "template-service",
+  "application_name": "Template API",
+  "user_domain_name": "Default",
+  "username": "admin",
+  "backend_env": {
+    "API_PREFIX": "/api/v1",
+    "DATABASE_BACKEND": "postgres",
+    "POSTGRES_URL": "postgresql://template:template@db:5432/template"
+  }
+}

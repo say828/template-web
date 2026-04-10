@@ -1,0 +1,125 @@
+name: templates-dev
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: templates-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DEV_POSTGRES_DB:-template}
+      POSTGRES_USER: ${DEV_POSTGRES_USER:-template}
+      POSTGRES_PASSWORD: ${DEV_POSTGRES_PASSWORD:-template}
+    ports:
+      - "${DEV_POSTGRES_PORT:-15432}:5432"
+    volumes:
+      - templates-postgres-dev-data:/var/lib/postgresql/data
+    networks:
+      - templates-dev
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DEV_POSTGRES_USER:-template} -d ${DEV_POSTGRES_DB:-template}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ../../server
+      dockerfile: Dockerfile
+    container_name: templates-server-dev
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_NAME: ${DEV_SERVER_APP_NAME:-Template Server DEV}
+      ENVIRONMENT: ${DEV_SERVER_ENVIRONMENT:-development}
+      API_PREFIX: ${DEV_SERVER_API_PREFIX:-/api/v1}
+      DATABASE_BACKEND: ${DEV_SERVER_DATABASE_BACKEND:-postgres}
+      POSTGRES_URL: ${DEV_SERVER_POSTGRES_URL:-postgresql+psycopg://template:template@postgres:5432/template}
+      MYSQL_URL: ${DEV_SERVER_MYSQL_URL:-mysql+pymysql://template:template@mysql:3306/template}
+      MARIADB_URL: ${DEV_SERVER_MARIADB_URL:-mysql+pymysql://template:template@mariadb:3306/template}
+      MONGODB_URL: ${DEV_SERVER_MONGODB_URL:-mongodb://mongo:27017}
+      MONGODB_DATABASE: ${DEV_SERVER_MONGODB_DATABASE:-template}
+      JWT_SECRET: ${DEV_SERVER_JWT_SECRET:-change-me}
+      ACCESS_TOKEN_TTL_MINUTES: ${DEV_SERVER_ACCESS_TOKEN_TTL_MINUTES:-120}
+      CORS_ORIGINS: ${DEV_SERVER_CORS_ORIGINS:-http://127.0.0.1:13000,http://127.0.0.1:13001,http://127.0.0.1:13002,http://127.0.0.1:14000}
+    ports:
+      - "${DEV_SERVER_HTTP_PORT:-18000}:8000"
+    networks:
+      - templates-dev
+
+  client-landing:
+    build:
+      context: ../..
+      dockerfile: client/landing/Dockerfile
+    container_name: templates-client-landing-dev
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_started
+    environment:
+      VITE_API_BASE_URL: ${DEV_CLIENT_LANDING_VITE_API_BASE_URL}
+      PORT: 3000
+    ports:
+      - "${DEV_CLIENT_LANDING_PORT:-13000}:3000"
+    networks:
+      - templates-dev
+
+  client-web:
+    build:
+      context: ../..
+      dockerfile: client/web/Dockerfile
+    container_name: templates-client-web-dev
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_started
+    environment:
+      VITE_API_BASE_URL: ${DEV_CLIENT_WEB_VITE_API_BASE_URL}
+      PORT: 3001
+    ports:
+      - "${DEV_CLIENT_WEB_PORT:-13001}:3001"
+    networks:
+      - templates-dev
+
+  client-mobile:
+    build:
+      context: ../..
+      dockerfile: client/mobile/Dockerfile
+    container_name: templates-client-mobile-dev
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_started
+    environment:
+      VITE_API_BASE_URL: ${DEV_CLIENT_MOBILE_VITE_API_BASE_URL}
+      PORT: 3002
+    ports:
+      - "${DEV_CLIENT_MOBILE_PORT:-13002}:3002"
+    networks:
+      - templates-dev
+
+  client-admin:
+    build:
+      context: ../..
+      dockerfile: client/admin/Dockerfile
+    container_name: templates-client-admin-dev
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_started
+    environment:
+      VITE_API_BASE_URL: ${DEV_CLIENT_ADMIN_VITE_API_BASE_URL}
+      PORT: 4000
+    ports:
+      - "${DEV_CLIENT_ADMIN_PORT:-14000}:4000"
+    networks:
+      - templates-dev
+
+networks:
+  templates-dev:
+    name: templates-dev
+
+volumes:
+  templates-postgres-dev-data:
+    name: templates-postgres-dev-data

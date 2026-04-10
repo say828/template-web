@@ -1,0 +1,80 @@
+[
+  {
+    "sku": "TSJ-BLK-S",
+    "product_id": "prd-1001",
+    "product_name": "TrailShell Pack Jacket",
+    "variant_name": "Basalt Black / S",
+    "location_id": "fc-seoul",
+    "location_name": "Seoul Fulfillment Center",
+    "on_hand": 18,
+    "reserved": 3,
+    "safety_stock": 4,
+    "reorder_point": 8,
+    "updated_at": "2026-03-13T08:30:00+09:00"
+  },
+  {
+    "sku": "TSJ-BLK-M",
+    "product_id": "prd-1001",
+    "product_name": "TrailShell Pack Jacket",
+    "variant_name": "Basalt Black / M",
+    "location_id": "fc-seoul",
+    "location_name": "Seoul Fulfillment Center",
+    "on_hand": 6,
+    "reserved": 1,
+    "safety_stock": 4,
+    "reorder_point": 8,
+    "updated_at": "2026-03-13T08:32:00+09:00"
+  },
+  {
+    "sku": "TSJ-SGE-M",
+    "product_id": "prd-1001",
+    "product_name": "TrailShell Pack Jacket",
+    "variant_name": "Sage / M",
+    "location_id": "fc-busan",
+    "location_name": "Busan Overflow Hub",
+    "on_hand": 11,
+    "reserved": 2,
+    "safety_stock": 3,
+    "reorder_point": 6,
+    "updated_at": "2026-03-13T09:10:00+09:00"
+  },
+  {
+    "sku": "CUS-SND-STD",
+    "product_id": "prd-1002",
+    "product_name": "Commuter Utility Sling",
+    "variant_name": "Sandstone / Standard",
+    "location_id": "fc-incheon",
+    "location_name": "Incheon Launch Warehouse",
+    "on_hand": 24,
+    "reserved": 0,
+    "safety_stock": 5,
+    "reorder_point": 10,
+    "updated_at": "2026-03-13T07:45:00+09:00"
+  },
+  {
+    "sku": "CUS-MOS-STD",
+    "product_id": "prd-1002",
+    "product_name": "Commuter Utility Sling",
+    "variant_name": "Moss / Standard",
+    "location_id": "fc-incheon",
+    "location_name": "Incheon Launch Warehouse",
+    "on_hand": 0,
+    "reserved": 0,
+    "safety_stock": 5,
+    "reorder_point": 10,
+    "updated_at": "2026-03-13T07:46:00+09:00"
+  },
+  {
+    "sku": "FTM-INK-12OZ",
+    "product_id": "prd-1003",
+    "product_name": "Fieldstone Thermal Mug",
+    "variant_name": "Ink Blue / 12 oz",
+    "location_id": "fc-seoul",
+    "location_name": "Seoul Fulfillment Center",
+    "on_hand": 7,
+    "reserved": 2,
+    "safety_stock": 3,
+    "reorder_point": 6,
+    "updated_at": "2026-03-13T06:55:00+09:00"
+  }
+]
